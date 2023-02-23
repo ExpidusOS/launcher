@@ -1,0 +1,8 @@
+option('git-commit', type: 'string', value: '', description: 'Git commit hash of the source code')
+option('git-branch', type: 'string', value: 'master', description: 'Git branch for the source code')
+option('build-user', type: 'string', value: 'nobody (nobody@localhost)', description: 'User who build the package')
+
+option('tests', type: 'feature', value: 'auto', description: 'Build and enable testing')
+option('default-id', type: 'string', value: 'com.expidus.genesis', description: 'Default application ID of the shell to launch')
+
+option('plymouth', type: 'feature', value: 'auto', description: 'Enable Plymouth messages')

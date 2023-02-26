@@ -91,6 +91,31 @@ int main(int argc, char** argv) {
     return EXIT_FAILURE;
   }
 
+  ExpidusConfigParser* parser = expidus_vendor_config_parser_new();
+  assert(parser != NULL);
+
+  NtValue value = expidus_config_parser_get(parser, config, NT_TYPE_ARGUMENT_KEY(Launcher, id), bt, &error);
+  if (error != NULL) {
+    NtString* str = nt_error_to_string(error);
+    assert(str != NULL);
+
+    const char* s = nt_string_get_value(str, NULL);
+
+    fprintf(stderr, "[ERR]: failed to get the shell application id: %s", s);
+    free((char*)s);
+
+    nt_type_instance_unref((NtTypeInstance*)str);
+    nt_type_instance_unref((NtTypeInstance*)bt);
+    return EXIT_FAILURE;
+  }
+
+  assert(value.type == NT_VALUE_TYPE_STRING);
+  char* application_id = value.data.string;
+  assert(application_id != NULL);
+
+  fprintf(stdout, "[MSG]: launching %s\n", application_id);
+
+  nt_type_instance_unref((NtTypeInstance*)parser);
   nt_type_instance_unref((NtTypeInstance*)bt);
   cleanup();
   return EXIT_SUCCESS;

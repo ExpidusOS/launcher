@@ -75,6 +75,7 @@ int main(int argc, char** argv) {
 
   NtError* error = NULL;
 
+  nt_backtrace_sync(bt);
   NtTypeArgument* config = expidus_vendor_config_load(bt, &error);
   if (config == NULL) {
     NtString* str = nt_error_to_string(error);
@@ -94,6 +95,7 @@ int main(int argc, char** argv) {
   ExpidusConfigParser* parser = expidus_vendor_config_parser_new();
   assert(parser != NULL);
 
+  nt_backtrace_sync(bt);
   NtValue value = expidus_config_parser_get(parser, config, NT_TYPE_ARGUMENT_KEY(Launcher, id), bt, &error);
   if (error != NULL) {
     NtString* str = nt_error_to_string(error);

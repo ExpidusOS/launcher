@@ -1,6 +1,6 @@
+#include <expidus/vendor-config.h>
 #include <assert.h>
 #include <expidus-launcher-build.h>
-#include <libvenfig.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -73,42 +73,13 @@ int main(int argc, char** argv) {
   NtBacktrace* bt = nt_backtrace_new();
   NtError* error = NULL;
 
-  const char* loc = expidus_vendor_config_get_location(EXPIDUS_VENDOR_CONFIG_SYSTEM);
-
-  ExpidusVendorConfig* sysconfig = expidus_vendor_config_new(loc, bt, &error);
-  if (error != NULL) {
-    print_err("failed to read vendor config");
-    nt_type_instance_unref((NtTypeInstance*)error);
+  NtTypeArgument* config = expidus_vendor_config_load(bt, &error);
+  if (config == NULL) {
+    fprintf(stderr, "[ERR]: failed to get the vendor config");
     nt_type_instance_unref((NtTypeInstance*)bt);
     cleanup();
     return EXIT_FAILURE;
   }
-
-  assert(sysconfig != NULL);
-
-  NtValue value = expidus_vendor_config_get(sysconfig, NT_TYPE_ARGUMENT_KEY(VendorConfig, datafs));
-  assert(value.type == NT_VALUE_TYPE_BOOL);
-
-  if (value.data.boolean) {
-    loc = expidus_vendor_config_get_location(EXPIDUS_VENDOR_CONFIG_DATA);
-
-    ExpidusVendorConfig* datafs_config = expidus_vendor_config_new(loc, bt, &error);
-    if (error != NULL) {
-      print_err("failed to read vendor config from data file system");
-      nt_type_instance_unref((NtTypeInstance*)error);
-      nt_type_instance_unref((NtTypeInstance*)bt);
-      cleanup();
-      return EXIT_FAILURE;
-    }
-
-    assert(datafs_config != NULL);
-
-    expidus_vendor_config_merge(sysconfig, datafs_config);
-    nt_type_instance_unref((NtTypeInstance*)datafs_config);
-  }
-
-  value = expidus_vendor_config_get(sysconfig, NT_TYPE_ARGUMENT_KEY(Launcher, id));
-  assert(value.type == NT_VALUE_TYPE_STRING);
 
   nt_type_instance_unref((NtTypeInstance*)bt);
   cleanup();

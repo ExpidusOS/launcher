@@ -71,7 +71,7 @@ add_global_arguments([
 assert(target_machine.system() == 'linux')
 
 plymouth_boot_client = dependency('ply-boot-client', required: get_option('plymouth').disable_auto_if(not dependency('ply-boot-client', required: false).found()))
-libvenfig = dependency('libvenfig', required: true)
+libexpidus = dependency('libexpidus', required: true)
 
 conf_data.set('HAS_PLYMOUTH', plymouth_boot_client.found())
 
@@ -83,7 +83,7 @@ configure_file(input: 'src/expidus-launcher.service.in', output: 'expidus-launch
   install: true,
   install_dir: libdir / 'systemd' / 'system')
 
-launcher_deps = [libvenfig]
+launcher_deps = [libexpidus]
 
 if plymouth_boot_client.found()
   launcher_deps += [plymouth_boot_client]

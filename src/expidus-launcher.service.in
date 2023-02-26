@@ -1,0 +1,13 @@
+[Unit]
+Description=ExpidusOS Shell Launcher
+After=rc-local.service systemd-machined.service systemd-user-sessions.service user.slice
+Requires=user.slice
+Conflicts=getty@tty7.service plymouth-quit.service
+OnFailure=plymouth-quit.service
+
+[Service]
+ExecStart=@BINDIR@/expidus-launcher
+Restart=always
+
+[Install]
+Alias=display-manager.service

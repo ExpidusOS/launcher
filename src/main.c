@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
 
   NtTypeArgument* config = expidus_vendor_config_load(bt, &error);
   if (config == NULL) {
-    fprintf(stderr, "[ERR]: failed to get the vendor config");
+    fprintf(stderr, "[ERR]: failed to get the vendor config\n");
     nt_type_instance_unref((NtTypeInstance*)bt);
     cleanup();
     return EXIT_FAILURE;

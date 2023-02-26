@@ -71,11 +71,21 @@ int main(int argc, char** argv) {
 #endif
 
   NtBacktrace* bt = nt_backtrace_new();
+  nt_backtrace_push(bt, main);
+
   NtError* error = NULL;
 
   NtTypeArgument* config = expidus_vendor_config_load(bt, &error);
   if (config == NULL) {
-    fprintf(stderr, "[ERR]: failed to get the vendor config\n");
+    NtString* str = nt_error_to_string(error);
+    assert(str != NULL);
+
+    const char* s = nt_string_get_value(str, NULL);
+
+    fprintf(stderr, "[ERR]: failed to get the vendor config: %s", s);
+    free((char*)s);
+
+    nt_type_instance_unref((NtTypeInstance*)str);
     nt_type_instance_unref((NtTypeInstance*)bt);
     cleanup();
     return EXIT_FAILURE;
